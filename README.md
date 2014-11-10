@@ -15,4 +15,4 @@ input_json = {
 } -> "100"
 ```
 
-See the `rzmq-test-client.R`.
+See the `rzmq-test-client.R` for an example.
