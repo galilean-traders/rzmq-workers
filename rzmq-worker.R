@@ -19,11 +19,13 @@ socket <- init.socket(context, "ZMQ_REP")
 bind.socket(socket, paste("tcp://*:", args$port))
 
 while(1) {
-    msg <- fromJSON(receive.socket(socket))
+    payload <- receive.string(socket)
+    print(payload)
+    msg <- fromJSON(payload)
     print(msg)
     fun <- msg$fun
     args <- msg$args
     print(args)
     ans <- do.call(fun, args)
-    send.socket(socket, toJSON(ans))
+    send.raw.string(socket, toJSON(ans))
 }
