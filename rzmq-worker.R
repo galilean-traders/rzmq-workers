@@ -1,9 +1,24 @@
 #!/usr/bin/env Rscript
 
 library(rzmq)
+library(xts)
 library(TTR)
 library(argparse)
 library(rjson)
+library(data.table)
+
+stoch.json <- function(data) {
+    df <- as.data.frame(rbindlist(data)[, time := as.POSIXct(time,
+                                          format="%Y-%m-%dT%H:%M:%OSZ",
+                                          tz="UTC")])
+    asxts <- xts(df[, -1], order.by=df[, 1])
+    s <- stoch(
+        HLC=asxts[, c("highMid", "lowMid", "closeMid")],
+        nFastK=15,
+        nFastD=3,
+        nSlowD=3)
+    return(data.frame(s))
+}
 
 argument.parser <- ArgumentParser(
         description="ZMQ REP server that runs an R function with json input and returns the output as json")
@@ -27,5 +42,6 @@ while(1) {
     args <- msg$args
     print(args)
     ans <- do.call(fun, args)
+    print(ans)
     send.raw.string(socket, toJSON(ans))
 }
