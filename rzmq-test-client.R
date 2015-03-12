@@ -4,8 +4,8 @@ library(rzmq)
 library(rjson)
 
 remote.exec <- function(socket, msg) {
-    send.string(socket, data=msg)
-    receive.socket(socket)
+    send.raw.string(socket, msg)
+    receive.string(socket)
 }
 
 context <- init.context()
