@@ -11,7 +11,7 @@ stoch.json <- function(data) {
     df <- as.data.frame(rbindlist(data)[, time := as.POSIXct(time,
                                           format="%Y-%m-%dT%H:%M:%OSZ",
                                           tz="UTC")])
-    asxts <- xts(df[, -1], order.by=df[, 1])
+    asxts <- xts(subset( df, select=-time), order.by=df$time)
     s <- stoch(
         HLC=asxts[, c("highMid", "lowMid", "closeMid")],
         nFastK=15,
