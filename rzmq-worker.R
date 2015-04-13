@@ -35,13 +35,9 @@ bind.socket(socket, paste("tcp://*:", args$port))
 
 while(1) {
     payload <- receive.string(socket)
-    print(payload)
     msg <- fromJSON(payload)
-    print(msg)
     fun <- msg$fun
     args <- msg$args
-    print(args)
     ans <- do.call(fun, args)
-    print(ans)
     send.raw.string(socket, toJSON(ans))
 }
